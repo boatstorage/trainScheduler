@@ -2,49 +2,38 @@
 <html>
 <head>
 	<title>Train Scheduler</title>
+
+	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
 
   <!-- Compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-
-	 
-	 <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
  
 </head>
 <body>
 <div class="jumbotron">
   <h1 class="display-3">Train Schedule</h1>
-  <p class="lead">Find the time for the next train</p>
+  <p class="lead">Update the Schedule</p>
  </div>
 
 <table class="highlight">
         <thead>
           <tr>
-              <th>Name</th>
-              <th>Item Name</th>
-              <th>Item Price</th>
+          	  <th>Train Name</th>
+              <th>Destination</th>
+              <th>Frequency (min)</th>
+              <th>Next Arrival</th>
+              <th>Minutes Away</th>
           </tr>
         </thead>
 
-        <tbody>
-          <tr>
-            <td>Alvin</td>
-            <td>Eclair</td>
-            <td>$0.87</td>
-          </tr>
-          <tr>
-            <td>Alan</td>
-            <td>Jellybean</td>
-            <td>$3.76</td>
-          </tr>
-          <tr>
-            <td>Jonathan</td>
-            <td>Lollipop</td>
-            <td>$7.00</td>
-          </tr>
+        <tbody id="table">
+        	
+          
         </tbody>
       </table>
 
@@ -52,22 +41,24 @@
   
   <form role="form">
               <div class="form-group">
-                <label for="name-input"> Employee Name:</label>
-                <input class="form-control" id="name-input" type="text">
+                <label for="name-input"> Train Name:</label>
+                	<input class="form-control" id="train-name-input" type="text">
+              </div>
+
+              <div class="form-group">
+                <label for="destination-input">Destination:</label>
+                <input class="form-control" id="destination-input" type="text">
+                	 
               </div>
               <div class="form-group">
-                <label for="role-input">Role:</label>
-                <input class="form-control" id="role-input" type="text">
-              </div>
-              <div class="form-group">
-                <label for="start-input">Start Date:</label>
+                <label for="start-input">First Train Time:</label>
                 <input class="form-control" id="start-input" type="text">
               </div>
               <div class="form-group">
-                <label for="monthly-input">Monthly Rate:</label>
-                <input class="form-control" id="monthly-input" type="text">
+                <label for="frequency-input">Frequency:</label>
+                <input class="form-control" id="frequency-input" type="text">
               </div>
-              <button class="btn btn-default" id="add-user" type="submit">Submit</button>
+              <button class="btn btn-default" id="add-train" type="submit">Submit</button>
             </form>
  
 
@@ -78,9 +69,60 @@
 
 <script type="text/javascript">
 
- $(document).ready(function() {
-    $('select').material_select();
-  });
+
+
+var config = {
+    apiKey: "AIzaSyB4PiLV7bnAvlAU8DE3QnFRP65KE_MVT2s",
+    authDomain: "boatstorage-8cee6.firebaseapp.com",
+    databaseURL: "https://boatstorage-8cee6.firebaseio.com",
+    projectId: "boatstorage-8cee6",
+    storageBucket: "boatstorage-8cee6.appspot.com",
+    messagingSenderId: "1068512439315"
+  };
+ firebase.initializeApp(config);
+
+var database = firebase.database();
+
+var trainName = "";
+var destination = "";
+var firstTrainTime = "";
+var frequency = "";
+var nextArrvial = "";
+var minutesAway = "";
+var format = 00;
+
+ $("#add-train").on("click", function(event) {
+      event.preventDefault();
+
+    trainName = $("#train-name-input").val().trim();
+    destination = $("#destination-input").val().trim()
+    firstTrainTime = $("#start-input").val().trim();
+    frequency = $("#frequency-input").val().trim();
+
+    database.ref().push({
+        trainName: trainName,
+        destination: destination,
+        firstTrainTime: firstTrainTime,
+        frequency: frequency,
+  
+});
+    
+});
+// $("#add-train").val('');
+
+ database.ref().on("child_added", function(childSnapshot) {
+
+    	var childSnapshot = childSnapshot.val();
+
+
+
+      $("#table").append("<tr><td>" + childSnapshot.trainName + "</td><td>" + childSnapshot.destination + "</td><td>" + childSnapshot.frequency + " </td><td>" + "nextArrvial" + "</td><td>" + "minutesAway" + " </td></tr>");
+     
+
+
+})
+
+
 
   </script>
 
