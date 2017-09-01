@@ -111,9 +111,7 @@ var frequency = "";
 });
 // $("#add-train").val('');
 
- database.ref().on("child_added", function(childSnapshot) {
 
-    	var childSnapshot = childSnapshot.val();
 
     	var timeInputVal = moment(firstTrainTime, "hh:mm").subtract(1, "years");
     	
@@ -125,9 +123,24 @@ var frequency = "";
     
 
     	var calculation = difference % frequency;
+
+ database.ref().on("child_added", function(childSnapshot) {
+
+		var childSnapshot = childSnapshot.val();    	
     	
 
-    	var minutesAway = frequency - calculation;
+    	var timeInputVal = moment(childSnapshot.firstTrainTime, "hh:mm").subtract(1, "years");
+    	
+
+    	var currentTime = moment();
+     	$("#current-time").html("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+     	var difference = moment().diff(moment(timeInputVal), "minutes");
+    
+
+    	var calculation = difference % childSnapshot.frequency;
+
+    	var minutesAway = childSnapshot.frequency - calculation;
     	
     	var nextArrvial = moment().add(minutesAway, "minutes").format("hh:mm");
     	console.log(nextArrvial);
