@@ -37,6 +37,8 @@
         </tbody>
       </table>
 
+      <div id="current-time"></div>
+
      
   
   <form role="form">
@@ -87,9 +89,8 @@ var trainName = "";
 var destination = "";
 var firstTrainTime = "";
 var frequency = "";
-var nextArrvial = "";
-var minutesAway = "";
-var format = 00;
+
+
 
  $("#add-train").on("click", function(event) {
       event.preventDefault();
@@ -114,9 +115,25 @@ var format = 00;
 
     	var childSnapshot = childSnapshot.val();
 
+    	var timeInputVal = moment(firstTrainTime, "hh:mm").subtract(1, "years");
+    	
+
+    	var currentTime = moment();
+     	$("#current-time").html("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+     	var difference = moment().diff(moment(timeInputVal), "minutes");
+    
+
+    	var calculation = difference % frequency;
+    	
+
+    	var minutesAway = frequency - calculation;
+    	
+    	var nextArrvial = moment().add(minutesAway, "minutes").format("hh:mm");
+    	console.log(nextArrvial);
 
 
-      $("#table").append("<tr><td>" + childSnapshot.trainName + "</td><td>" + childSnapshot.destination + "</td><td>" + childSnapshot.frequency + " </td><td>" + "nextArrvial" + "</td><td>" + "minutesAway" + " </td></tr>");
+      $("#table").append("<tr><td>" + childSnapshot.trainName + "</td><td>" + childSnapshot.destination + "</td><td>" + childSnapshot.frequency + " </td><td>" + nextArrvial + "</td><td>" + minutesAway + " </td></tr>");
      
 
 
